@@ -15,7 +15,7 @@ const config: Config = {
           conflict: "#FF3333",
           unrest: "#FF8C00",
           biosecurity: "#33FF33",
-          humanitarian: "#00D7FF",
+          tensions: "#00D7FF",
         },
       },
       fontFamily: {

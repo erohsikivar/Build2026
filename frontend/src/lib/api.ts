@@ -34,7 +34,7 @@ const TYPE_MAP: Record<BackendCrisis["type"], CrisisType> = {
   "Civil Unrest": "unrest",
   Biosecurity: "biosecurity",
   // Geopolitical tensions render on the conflict vector layer.
-  "Geopolitical Tensions": "conflict",
+  "Geopolitical Tensions": "tensions",
 };
 
 function toCrisisEvent(item: BackendCrisis): CrisisEvent {
