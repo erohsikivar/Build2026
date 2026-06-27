@@ -88,6 +88,8 @@ export default function Page() {
     selectedCategoryFilter,
     nowMs,
     hydrated,
+    loading,
+    error,
     setSelectedEventId,
     setSelectedCategoryFilter,
     simulateIngestion,
@@ -140,7 +142,7 @@ export default function Page() {
           </div>
           <div className="leading-tight">
             <h1 className="text-lg font-bold tracking-[0.18em] text-white">
-              GEOPULSE<span className="text-neon-humanitarian"> AI</span>
+              GeoStat<span className="text-neon-humanitarian"> AI</span>
             </h1>
             <p className="text-[10px] uppercase tracking-[0.28em] text-slate-400">
               Verifiable Crisis Intelligence
@@ -298,11 +300,37 @@ export default function Page() {
               Regional Intelligence Feed
             </h2>
             <p className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-slate-400">
-              {feed.length} verified logs · newest first
+              {loading
+                ? "syncing intelligence uplink…"
+                : error
+                  ? "uplink error · see feed"
+                  : `${feed.length} verified logs · newest first`}
             </p>
           </div>
 
           <div className="flex flex-col gap-2.5 p-3">
+            {loading && activeEvents.length === 0 && (
+              <div className="rounded-lg border border-dashed border-white/10 p-6 text-center text-xs text-slate-400">
+                <span className="gp-blink tracking-widest">
+                  ESTABLISHING SECURE UPLINK…
+                </span>
+              </div>
+            )}
+            {!loading && error && (
+              <div className="rounded-lg border border-dashed border-neon-conflict/40 bg-neon-conflict/5 p-6 text-center text-xs text-neon-conflict">
+                <div className="font-bold uppercase tracking-[0.18em]">
+                  Backend Unreachable
+                </div>
+                <p className="mt-2 leading-relaxed text-slate-400">{error}</p>
+                <button
+                  type="button"
+                  onClick={simulateIngestion}
+                  className="mt-3 rounded border border-neon-conflict/40 px-3 py-1.5 font-bold uppercase tracking-[0.16em] text-neon-conflict transition hover:bg-neon-conflict/10"
+                >
+                  Retry Uplink
+                </button>
+              </div>
+            )}
             {feed.map((event) => (
               <FeedCard
                 key={event.id}
@@ -313,9 +341,11 @@ export default function Page() {
                 onSelect={() => setSelectedEventId(event.id)}
               />
             ))}
-            {feed.length === 0 && (
+            {!loading && !error && feed.length === 0 && (
               <div className="rounded-lg border border-dashed border-white/10 p-6 text-center text-xs text-slate-500">
-                No logs match the active vector filter.
+                {activeEvents.length === 0
+                  ? "No crisis intelligence available."
+                  : "No logs match the active vector filter."}
               </div>
             )}
           </div>
