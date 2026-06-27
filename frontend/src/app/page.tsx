@@ -42,7 +42,7 @@ const CATEGORY_ICONS: Record<CategoryFilter, LucideIcon> = {
   conflict: Swords,
   unrest: Megaphone,
   biosecurity: Biohazard,
-  humanitarian: HeartHandshake,
+  tensions: HeartHandshake,
 };
 
 const STAGE_LABEL: Record<DecayStage, string> = {
@@ -104,7 +104,7 @@ export default function Page() {
       conflict: { visible: 0, archived: 0, total: 0 },
       unrest: { visible: 0, archived: 0, total: 0 },
       biosecurity: { visible: 0, archived: 0, total: 0 },
-      humanitarian: { visible: 0, archived: 0, total: 0 },
+      tensions: { visible: 0, archived: 0, total: 0 },
     };
     for (const event of activeEvents) {
       const bucket = init[event.type];

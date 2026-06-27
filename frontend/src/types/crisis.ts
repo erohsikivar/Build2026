@@ -1,4 +1,4 @@
-export type CrisisType = "conflict" | "unrest" | "biosecurity" | "humanitarian";
+export type CrisisType = "conflict" | "unrest" | "biosecurity" | "tensions";
 
 export type CategoryFilter = "all" | CrisisType;
 
@@ -25,9 +25,9 @@ export interface CategoryMeta {
 // High-contrast vector palette tuned for the light (CartoDB Positron) canvas.
 export const CATEGORY_COLORS: Record<CrisisType, string> = {
   conflict: "#FF3333",
-  unrest: "#E67E22",
-  biosecurity: "#2ECC71",
-  humanitarian: "#0097A7",
+  unrest: "#FF8C00",
+  biosecurity: "#33FF33",
+  tensions: "#00D7FF",
 };
 
 export const CATEGORY_META: CategoryMeta[] = [
@@ -35,7 +35,7 @@ export const CATEGORY_META: CategoryMeta[] = [
   { key: "conflict", label: "Active Conflict", color: CATEGORY_COLORS.conflict },
   { key: "unrest", label: "Civil Unrest", color: CATEGORY_COLORS.unrest },
   { key: "biosecurity", label: "Biosecurity", color: CATEGORY_COLORS.biosecurity },
-  { key: "humanitarian", label: "Humanitarian", color: CATEGORY_COLORS.humanitarian },
+  { key: "tensions", label: "Geopolitical Tensions", color: CATEGORY_COLORS.tensions },
 ];
 
 /**

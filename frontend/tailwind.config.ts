@@ -14,9 +14,9 @@ const config: Config = {
         },
         neon: {
           conflict: "#FF3333",
-          unrest: "#E67E22",
-          biosecurity: "#2ECC71",
-          humanitarian: "#0097A7",
+          unrest: "#FF8C00",
+          biosecurity: "#33FF33",
+          tensions: "#00D7FF",
         },
       },
       fontFamily: {
