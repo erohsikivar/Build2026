@@ -1,0 +1,66 @@
+[
+  {
+    "id": "c1",
+    "type": "conflict",
+    "title": "Tactical Missile Barrage Detected",
+    "description": "Multi-source confirmation of tactical strike on critical infrastructure.",
+    "timestamp": "2026-06-27T10:15:00.000Z",
+    "sourceCoords": [50.05, 36.25],
+    "targetCoords": [49.98, 36.15],
+    "confidence_score": 0.94,
+    "corroborating_sources": ["Reuters", "BBC", "AP"]
+  },
+  {
+    "id": "c2",
+    "type": "unrest",
+    "title": "Metropolitan Grid Protest Escalation",
+    "description": "Mass civilian unrest locks down inner city municipal logistics centers.",
+    "timestamp": "2026-06-27T09:45:00.000Z",
+    "sourceCoords": [1.3521, 103.8198],
+    "confidence_score": 0.88,
+    "corroborating_sources": ["Channel NewsAsia", "Bloomberg"]
+  },
+  {
+    "id": "c3",
+    "type": "biosecurity",
+    "title": "Tier-3 Quarantine Enforcement",
+    "description": "Pathogen variance outbreak vectors detected; perimeter containment protocols active.",
+    "timestamp": "2026-06-27T04:30:00.000Z",
+    "sourceCoords": [31.2304, 121.4737],
+    "targetCoords": [31.5, 121.2],
+    "confidence_score": 0.91,
+    "corroborating_sources": ["WHO Intelligence", "Reuters"]
+  },
+  {
+    "id": "c4",
+    "type": "humanitarian",
+    "title": "Border Exodus Influx",
+    "description": "Mass civilian displacement vector accelerating past regional boundaries.",
+    "timestamp": "2026-06-27T01:15:00.000Z",
+    "sourceCoords": [-1.2921, 36.8219],
+    "targetCoords": [-4.0435, 39.6682],
+    "confidence_score": 0.95,
+    "corroborating_sources": ["UNHCR", "Al Jazeera"]
+  },
+  {
+    "id": "c5",
+    "type": "conflict",
+    "title": "Naval Interdiction Event",
+    "description": "Strait blockade enforcement using strategic assets.",
+    "timestamp": "2026-06-26T18:00:00.000Z",
+    "sourceCoords": [26.2285, 50.586],
+    "targetCoords": [27.0, 51.5],
+    "confidence_score": 0.97,
+    "corroborating_sources": ["AP", "Naval Intel Group"]
+  },
+  {
+    "id": "c6",
+    "type": "unrest",
+    "title": "Industrial Logistics Strike",
+    "description": "Port infrastructure halted completely due to localized friction cascades.",
+    "timestamp": "2026-06-26T11:00:00.000Z",
+    "sourceCoords": [51.9244, 4.4777],
+    "confidence_score": 0.85,
+    "corroborating_sources": ["DW", "Le Monde"]
+  }
+]
