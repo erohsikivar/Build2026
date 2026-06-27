@@ -23,7 +23,8 @@ app = FastAPI(title="GeoStat Crisis Intelligence API", version="1.0.0")
 # The Next.js frontend runs on http://localhost:3000.
 ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3000"
+    "https://geostatBuild26.vercel.app",
 ]
 
 app.add_middleware(
