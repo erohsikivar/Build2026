@@ -35,8 +35,9 @@ DATA_DIR = APP_DIR / "data"
 DATA_FILE = DATA_DIR / "crisisData.json"
 ENV_PATH = BACKEND_DIR / ".env"
 
-# Load API keys exclusively from backend/.env. Keys are never logged or copied.
-load_dotenv(dotenv_path=ENV_PATH)
+# Keys are loaded lazily inside _get_keys() with override=True so that the
+# server picks up .env changes without a restart and works correctly even if
+# the file did not exist when the process first started.
 
 OPENAI_MODEL = "gpt-4o-mini"
 
@@ -74,6 +75,10 @@ REPUTABLE_DOMAINS = [
 # ---------------------------------------------------------------------------
 def _get_keys() -> tuple[str, str]:
     import os
+
+    # Re-read .env on every call so keys are available even if the server
+    # started before the file existed or the file was updated post-startup.
+    load_dotenv(dotenv_path=ENV_PATH, override=True)
 
     exa_key = os.getenv("EXA_API_KEY")
     openai_key = os.getenv("OPENAI_API_KEY")

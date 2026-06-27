@@ -1,0 +1,97 @@
+{
+  "crises": [
+    {
+      "id": "evt-2026-001",
+      "title": "U.S. Strikes Iran After Attack in Strait of Hormuz",
+      "type": "Geopolitical Tensions",
+      "severity": "Critical",
+      "confidence": 85,
+      "timestamp": "2026-06-27T07:45:49.808750Z",
+      "coordinates": [
+        26.0,
+        56.0
+      ],
+      "locationName": "Strait of Hormuz",
+      "summary": "The U.S. conducted strikes on Iranian military sites in retaliation for a drone attack on a cargo ship in the Strait of Hormuz. Iran has vowed a swift response.",
+      "sources": [
+        "haaretz.com",
+        "aljazeera.com",
+        "aa.com.tr"
+      ]
+    },
+    {
+      "id": "evt-2026-002",
+      "title": "Ukraine Launches Major Drone Attack on Russia",
+      "type": "Conflict",
+      "severity": "High",
+      "confidence": 90,
+      "timestamp": "2026-06-27T07:20:49.808750Z",
+      "coordinates": [
+        55.0,
+        37.0
+      ],
+      "locationName": "Russia",
+      "summary": "Ukraine executed one of its largest drone assaults, targeting multiple regions in Russia and Crimea, with reports of 660 drones intercepted by Russian defenses.",
+      "sources": [
+        "aljazeera.com",
+        "theglobeandmail.com",
+        "wtop.com"
+      ]
+    },
+    {
+      "id": "evt-2026-003",
+      "title": "Ebola Outbreak Declared Emergency in DRC and Uganda",
+      "type": "Biosecurity",
+      "severity": "Critical",
+      "confidence": 95,
+      "timestamp": "2026-06-27T06:55:49.808750Z",
+      "coordinates": [
+        -1.0,
+        29.0
+      ],
+      "locationName": "Democratic Republic of the Congo",
+      "summary": "The WHO declared the Ebola outbreak caused by the Bundibugyo virus in DRC and Uganda a public health emergency, with over 1,000 confirmed cases reported.",
+      "sources": [
+        "who.int",
+        "un.org",
+        "abc.net.au"
+      ]
+    },
+    {
+      "id": "evt-2026-004",
+      "title": "Hezbollah Supporters Riot in Beirut",
+      "type": "Civil Unrest",
+      "severity": "High",
+      "confidence": 80,
+      "timestamp": "2026-06-27T06:30:49.808750Z",
+      "coordinates": [
+        33.9,
+        35.5
+      ],
+      "locationName": "Beirut, Lebanon",
+      "summary": "Supporters of Hezbollah rioted in Beirut following a framework deal between Israel and Lebanon, blocking roads and causing unrest.",
+      "sources": [
+        "ynetnews.com",
+        "middleeasteye.net"
+      ]
+    },
+    {
+      "id": "evt-2026-005",
+      "title": "Hundreds Detained in Kenya Protests",
+      "type": "Civil Unrest",
+      "severity": "Medium",
+      "confidence": 75,
+      "timestamp": "2026-06-27T06:05:49.808750Z",
+      "coordinates": [
+        -1.2864,
+        36.8172
+      ],
+      "locationName": "Nairobi, Kenya",
+      "summary": "Police detained hundreds during protests marking the anniversary of deadly anti-government demonstrations in 2024, demanding justice for victims.",
+      "sources": [
+        "pbs.org"
+      ]
+    }
+  ],
+  "generatedAt": "2026-06-27T07:45:49.808750Z"
+}

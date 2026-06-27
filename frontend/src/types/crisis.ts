@@ -22,15 +22,16 @@ export interface CategoryMeta {
   color: string;
 }
 
+// High-contrast vector palette tuned for the light (CartoDB Positron) canvas.
 export const CATEGORY_COLORS: Record<CrisisType, string> = {
   conflict: "#FF3333",
-  unrest: "#FF8C00",
-  biosecurity: "#33FF33",
-  humanitarian: "#00D7FF",
+  unrest: "#E67E22",
+  biosecurity: "#2ECC71",
+  humanitarian: "#0097A7",
 };
 
 export const CATEGORY_META: CategoryMeta[] = [
-  { key: "all", label: "All Vectors", color: "#FFFFFF" },
+  { key: "all", label: "All Vectors", color: "#334155" },
   { key: "conflict", label: "Active Conflict", color: CATEGORY_COLORS.conflict },
   { key: "unrest", label: "Civil Unrest", color: CATEGORY_COLORS.unrest },
   { key: "biosecurity", label: "Biosecurity", color: CATEGORY_COLORS.biosecurity },

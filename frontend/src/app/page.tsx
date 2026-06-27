@@ -31,7 +31,7 @@ import {
 const GeoPulseMap = dynamic(() => import("@/components/GeoPulseMap"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-full w-full items-center justify-center bg-base-900 text-sm text-slate-500">
+    <div className="flex h-full w-full items-center justify-center bg-base-700 text-sm text-slate-500">
       <span className="gp-blink tracking-widest">CALIBRATING SATELLITE UPLINK…</span>
     </div>
   ),
@@ -51,14 +51,13 @@ const STAGE_LABEL: Record<DecayStage, string> = {
   archived: "ARCHIVED",
 };
 
-const utcDate = new Intl.DateTimeFormat("en-GB", {
-  timeZone: "UTC",
+// Local wall-clock formatters so the displayed time matches the operator's clock.
+const localDate = new Intl.DateTimeFormat("en-GB", {
   day: "2-digit",
   month: "short",
   year: "numeric",
 });
-const utcTime = new Intl.DateTimeFormat("en-GB", {
-  timeZone: "UTC",
+const localTime = new Intl.DateTimeFormat("en-GB", {
   hour: "2-digit",
   minute: "2-digit",
   second: "2-digit",
@@ -67,7 +66,7 @@ const utcTime = new Intl.DateTimeFormat("en-GB", {
 
 function formatStamp(iso: string): string {
   const d = new Date(iso);
-  return `${utcDate.format(d).toUpperCase()} · ${utcTime.format(d)} Z`;
+  return `${localDate.format(d).toUpperCase()} · ${localTime.format(d)}`;
 }
 
 function relativeAge(iso: string, nowMs: number): string {
@@ -93,6 +92,7 @@ export default function Page() {
     setSelectedEventId,
     setSelectedCategoryFilter,
     simulateIngestion,
+    retryLoad,
   } = useCrisis();
   const counts = useDecayCounts();
 
@@ -132,34 +132,34 @@ export default function Page() {
   }, [activeEvents]);
 
   return (
-    <div className="flex h-screen w-screen flex-col bg-base-900 text-slate-100">
+    <div className="flex h-screen w-screen flex-col bg-base-900 text-slate-900">
       {/* ===================== HEADER ===================== */}
-      <header className="z-20 flex items-center justify-between gap-4 border-b border-white/10 bg-base-800/80 px-5 py-3 backdrop-blur-md">
+      <header className="z-20 flex items-center justify-between gap-4 border-b border-slate-200/80 bg-white/90 px-5 py-3 shadow-sm backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <div className="relative grid h-10 w-10 place-items-center rounded-lg bg-gradient-to-br from-neon-humanitarian/30 to-neon-conflict/20 ring-1 ring-white/15">
+          <div className="relative grid h-10 w-10 place-items-center rounded-lg bg-gradient-to-br from-neon-humanitarian/20 to-neon-conflict/15 ring-1 ring-slate-200">
             <SatelliteDish className="h-5 w-5 text-neon-humanitarian" />
             <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-neon-biosecurity gp-blink" />
           </div>
           <div className="leading-tight">
-            <h1 className="text-lg font-bold tracking-[0.18em] text-white">
+            <h1 className="text-lg font-bold tracking-[0.18em] text-slate-900">
               GeoStat<span className="text-neon-humanitarian"> AI</span>
             </h1>
-            <p className="text-[10px] uppercase tracking-[0.28em] text-slate-400">
+            <p className="text-[10px] uppercase tracking-[0.28em] text-slate-500">
               Verifiable Crisis Intelligence
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="hidden items-center gap-3 rounded-lg border border-white/10 bg-base-900/70 px-4 py-1.5 sm:flex">
+          <div className="hidden items-center gap-3 rounded-lg border border-slate-200/80 bg-base-800 px-4 py-1.5 sm:flex">
             <Clock className="h-4 w-4 text-neon-humanitarian" />
             <div className="text-right leading-tight">
-              <div className="font-semibold tabular-nums tracking-wider text-white">
-                {hydrated ? utcTime.format(new Date(nowMs)) : "--:--:--"}
-                <span className="ml-1 text-[10px] text-slate-400">Z</span>
+              <div className="font-semibold tabular-nums tracking-wider text-slate-900">
+                {hydrated ? localTime.format(new Date(nowMs)) : "--:--:--"}
+                <span className="ml-1 text-[10px] text-slate-500">LCL</span>
               </div>
-              <div className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                {hydrated ? utcDate.format(new Date(nowMs)) : "27 JUN 2026"}
+              <div className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                {hydrated ? localDate.format(new Date(nowMs)).toUpperCase() : "27 JUN 2026"}
               </div>
             </div>
           </div>
@@ -167,10 +167,11 @@ export default function Page() {
           <button
             type="button"
             onClick={simulateIngestion}
-            className="group flex items-center gap-2 rounded-lg border border-neon-conflict/40 bg-neon-conflict/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-neon-conflict transition hover:bg-neon-conflict/20 hover:shadow-[0_0_20px_rgba(255,51,51,0.35)] active:scale-95"
+            disabled={loading}
+            className="group flex items-center gap-2 rounded-lg border border-neon-conflict/50 bg-neon-conflict/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-neon-conflict transition hover:bg-neon-conflict/20 hover:shadow-[0_0_18px_rgba(255,51,51,0.25)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Zap className="h-4 w-4 transition group-hover:scale-110" />
-            Simulate Real-Time Ingestion
+            <Zap className={`h-4 w-4 transition group-hover:scale-110 ${loading ? "gp-blink" : ""}`} />
+            {loading ? "Ingesting…" : "Simulate Real-Time Ingestion"}
           </button>
         </div>
       </header>
@@ -178,24 +179,24 @@ export default function Page() {
       {/* ===================== BODY ===================== */}
       <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[300px_1fr_360px]">
         {/* -------- LEFT: Tactical Index -------- */}
-        <aside className="gp-glass gp-scroll z-10 hidden flex-col gap-4 overflow-y-auto border-r border-white/10 p-4 lg:flex">
+        <aside className="gp-glass gp-scroll z-10 hidden flex-col gap-4 overflow-y-auto border-r border-slate-200/80 p-4 lg:flex">
           <div>
-            <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-300">
+            <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-700">
               <Activity className="h-4 w-4 text-neon-humanitarian" />
               Tactical Index
             </h2>
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <Metric label="On Map" value={counts.visible} accent="#00D7FF" />
-              <Metric label="Archived" value={counts.archived} accent="#7E8CA8" />
-              <Metric label="Total Logs" value={counts.total} accent="#33FF33" />
-              <Metric label="Avg Conf." value={`${avgConfidence}%`} accent="#FF8C00" />
+              <Metric label="On Map" value={counts.visible} accent="#0097A7" />
+              <Metric label="Archived" value={counts.archived} accent="#64748B" />
+              <Metric label="Total Logs" value={counts.total} accent="#16A34A" />
+              <Metric label="Avg Conf." value={`${avgConfidence}%`} accent="#E67E22" />
             </div>
           </div>
 
-          <div className="h-px bg-white/10" />
+          <div className="h-px bg-slate-200" />
 
           <div>
-            <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300">
+            <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-700">
               Threat Vector Filters
             </h2>
             <div className="mt-3 flex flex-col gap-2">
@@ -213,8 +214,8 @@ export default function Page() {
                     onClick={() => setSelectedCategoryFilter(cat.key)}
                     className={`flex items-center justify-between rounded-lg border px-3 py-2.5 text-left transition ${
                       active
-                        ? "border-white/30 bg-white/10"
-                        : "border-white/5 bg-base-900/40 hover:border-white/15 hover:bg-white/5"
+                        ? "border-slate-300 bg-slate-100 shadow-sm"
+                        : "border-slate-200/70 bg-white/60 hover:border-slate-300 hover:bg-slate-50"
                     }`}
                     style={
                       active
@@ -223,11 +224,8 @@ export default function Page() {
                     }
                   >
                     <span className="flex items-center gap-2.5">
-                      <Icon
-                        className="h-4 w-4"
-                        style={{ color: cat.color }}
-                      />
-                      <span className="text-sm font-medium text-slate-100">
+                      <Icon className="h-4 w-4" style={{ color: cat.color }} />
+                      <span className="text-sm font-medium text-slate-800">
                         {cat.label}
                       </span>
                     </span>
@@ -235,13 +233,13 @@ export default function Page() {
                       <span
                         className="rounded px-1.5 py-0.5"
                         style={{
-                          backgroundColor: `${cat.color}22`,
+                          backgroundColor: `${cat.color}1f`,
                           color: cat.color,
                         }}
                       >
                         {stats.visible}
                       </span>
-                      <span className="rounded bg-white/5 px-1.5 py-0.5 text-slate-400">
+                      <span className="rounded bg-slate-200/80 px-1.5 py-0.5 text-slate-500">
                         {stats.archived}
                       </span>
                     </span>
@@ -250,31 +248,31 @@ export default function Page() {
               })}
             </div>
             <p className="mt-3 flex items-center gap-1.5 text-[10px] leading-relaxed text-slate-500">
-              <span className="h-2 w-2 rounded-sm bg-neon-humanitarian/60" /> live
+              <span className="h-2 w-2 rounded-sm bg-neon-humanitarian/70" /> live
               on map
-              <span className="ml-2 h-2 w-2 rounded-sm bg-white/20" /> archived
+              <span className="ml-2 h-2 w-2 rounded-sm bg-slate-300" /> archived
               (12h+)
             </p>
           </div>
 
-          <div className="h-px bg-white/10" />
+          <div className="h-px bg-slate-200" />
 
-          <div className="rounded-lg border border-white/10 bg-base-900/50 p-3">
-            <h3 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-300">
+          <div className="rounded-lg border border-slate-200/80 bg-white/70 p-3">
+            <h3 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-700">
               <ShieldCheck className="h-3.5 w-3.5 text-neon-biosecurity" />
               Decay Protocol
             </h3>
-            <ul className="mt-2 space-y-1.5 text-[11px] text-slate-400">
+            <ul className="mt-2 space-y-1.5 text-[11px] text-slate-600">
               <li className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-neon-biosecurity gp-blink" />
                 0–2h · solid neon, kinetic
               </li>
               <li className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-neon-unrest/50" />
+                <span className="h-2 w-2 rounded-full bg-neon-unrest/60" />
                 2–12h · static, 40% opacity
               </li>
               <li className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-white/20" />
+                <span className="h-2 w-2 rounded-full bg-slate-300" />
                 12h+ · hidden from canvas
               </li>
             </ul>
@@ -282,24 +280,24 @@ export default function Page() {
         </aside>
 
         {/* -------- CENTER: Map -------- */}
-        <main className="relative min-h-0 bg-base-900">
+        <main className="relative min-h-0 bg-base-700">
           <GeoPulseMap />
-          <div className="pointer-events-none absolute left-4 top-4 z-[400] flex items-center gap-2 rounded-md border border-white/10 bg-base-900/70 px-3 py-1.5 backdrop-blur-md">
+          <div className="pointer-events-none absolute left-4 top-4 z-[400] flex items-center gap-2 rounded-md border border-slate-200/80 bg-white/85 px-3 py-1.5 shadow-sm backdrop-blur-md">
             <Radio className="h-3.5 w-3.5 text-neon-conflict gp-blink" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-200">
+            <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-700">
               Kinetic Viewport · Live
             </span>
           </div>
         </main>
 
         {/* -------- RIGHT: Intelligence Feed -------- */}
-        <aside className="gp-glass gp-scroll z-10 flex min-h-0 flex-col overflow-y-auto border-l border-white/10">
-          <div className="sticky top-0 z-10 border-b border-white/10 bg-base-800/90 px-4 py-3 backdrop-blur-md">
-            <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.16em] text-white">
+        <aside className="gp-glass gp-scroll z-10 flex min-h-0 flex-col overflow-y-auto border-l border-slate-200/80">
+          <div className="sticky top-0 z-10 border-b border-slate-200/80 bg-white/90 px-4 py-3 backdrop-blur-md">
+            <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.16em] text-slate-900">
               <SatelliteDish className="h-4 w-4 text-neon-humanitarian" />
               Regional Intelligence Feed
             </h2>
-            <p className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-slate-400">
+            <p className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-slate-500">
               {loading
                 ? "syncing intelligence uplink…"
                 : error
@@ -310,22 +308,22 @@ export default function Page() {
 
           <div className="flex flex-col gap-2.5 p-3">
             {loading && activeEvents.length === 0 && (
-              <div className="rounded-lg border border-dashed border-white/10 p-6 text-center text-xs text-slate-400">
+              <div className="rounded-lg border border-dashed border-slate-300 p-6 text-center text-xs text-slate-500">
                 <span className="gp-blink tracking-widest">
                   ESTABLISHING SECURE UPLINK…
                 </span>
               </div>
             )}
             {!loading && error && (
-              <div className="rounded-lg border border-dashed border-neon-conflict/40 bg-neon-conflict/5 p-6 text-center text-xs text-neon-conflict">
+              <div className="rounded-lg border border-dashed border-neon-conflict/50 bg-neon-conflict/5 p-6 text-center text-xs text-neon-conflict">
                 <div className="font-bold uppercase tracking-[0.18em]">
                   Backend Unreachable
                 </div>
-                <p className="mt-2 leading-relaxed text-slate-400">{error}</p>
+                <p className="mt-2 leading-relaxed text-slate-500">{error}</p>
                 <button
                   type="button"
-                  onClick={simulateIngestion}
-                  className="mt-3 rounded border border-neon-conflict/40 px-3 py-1.5 font-bold uppercase tracking-[0.16em] text-neon-conflict transition hover:bg-neon-conflict/10"
+                  onClick={retryLoad}
+                  className="mt-3 rounded border border-neon-conflict/50 px-3 py-1.5 font-bold uppercase tracking-[0.16em] text-neon-conflict transition hover:bg-neon-conflict/10"
                 >
                   Retry Uplink
                 </button>
@@ -342,7 +340,7 @@ export default function Page() {
               />
             ))}
             {!loading && !error && feed.length === 0 && (
-              <div className="rounded-lg border border-dashed border-white/10 p-6 text-center text-xs text-slate-500">
+              <div className="rounded-lg border border-dashed border-slate-300 p-6 text-center text-xs text-slate-500">
                 {activeEvents.length === 0
                   ? "No crisis intelligence available."
                   : "No logs match the active vector filter."}
@@ -365,14 +363,14 @@ function Metric({
   accent: string;
 }) {
   return (
-    <div className="rounded-lg border border-white/10 bg-base-900/50 px-3 py-2">
+    <div className="rounded-lg border border-slate-200/80 bg-white/70 px-3 py-2">
       <div
         className="text-xl font-bold tabular-nums leading-none"
         style={{ color: accent }}
       >
         {value}
       </div>
-      <div className="mt-1 text-[10px] uppercase tracking-[0.16em] text-slate-400">
+      <div className="mt-1 text-[10px] uppercase tracking-[0.16em] text-slate-500">
         {label}
       </div>
     </div>
@@ -395,9 +393,9 @@ function FeedCard({
   const color = CATEGORY_COLORS[event.type];
   const confidence = Math.round(event.confidence_score * 100);
   const stageStyles: Record<DecayStage, string> = {
-    fresh: "bg-neon-biosecurity/15 text-neon-biosecurity",
-    recent: "bg-neon-unrest/15 text-neon-unrest",
-    archived: "bg-white/10 text-slate-400",
+    fresh: "bg-neon-biosecurity/15 text-emerald-700",
+    recent: "bg-neon-unrest/15 text-orange-700",
+    archived: "bg-slate-200/80 text-slate-500",
   };
 
   return (
@@ -406,15 +404,15 @@ function FeedCard({
       onClick={onSelect}
       className={`group relative w-full overflow-hidden rounded-lg border p-3 text-left transition ${
         selected
-          ? "border-white/40 bg-white/10"
-          : "border-white/10 bg-base-900/50 hover:border-white/25 hover:bg-white/5"
+          ? "border-slate-300 bg-slate-100 shadow-sm"
+          : "border-slate-200/80 bg-white/70 hover:border-slate-300 hover:bg-slate-50"
       }`}
       style={{ boxShadow: `inset 3px 0 0 0 ${color}` }}
     >
       <div className="flex items-start justify-between gap-2">
         <span
           className="rounded px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em]"
-          style={{ backgroundColor: `${color}22`, color }}
+          style={{ backgroundColor: `${color}1f`, color }}
         >
           {event.type}
         </span>
@@ -428,10 +426,10 @@ function FeedCard({
         </span>
       </div>
 
-      <h3 className="mt-2 text-sm font-semibold leading-snug text-white">
+      <h3 className="mt-2 text-sm font-semibold leading-snug text-slate-900">
         {event.title}
       </h3>
-      <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-slate-400">
+      <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-slate-600">
         {event.description}
       </p>
 
@@ -445,17 +443,16 @@ function FeedCard({
       </div>
 
       <div className="mt-2 flex items-center gap-2">
-        <span className="flex items-center gap-1 text-[10px] font-bold text-neon-biosecurity">
+        <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-700">
           <CheckCircle2 className="h-3.5 w-3.5" />
           {confidence}%
         </span>
-        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-200">
           <div
             className="h-full rounded-full"
             style={{
               width: `${confidence}%`,
-              background:
-                "linear-gradient(90deg, #33FF33aa, #00D7FF)",
+              background: "linear-gradient(90deg, #2ECC71, #0097A7)",
             }}
           />
         </div>
@@ -465,7 +462,7 @@ function FeedCard({
         {event.corroborating_sources.map((src) => (
           <span
             key={src}
-            className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-slate-300"
+            className="rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-slate-600"
           >
             {src}
           </span>

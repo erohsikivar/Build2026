@@ -14,6 +14,10 @@ import {
 
 type LatLng = [number, number];
 
+// Rigid global frame. Used as both the initial fit bounds and the hard
+// max-bounds wall so the world map can never wrap or be dragged into the void.
+const GLOBAL_BOUNDS = L.latLngBounds(L.latLng(-85, -180), L.latLng(85, 180));
+
 /**
  * Quadratic-bezier sampling between two coords. The control point is pushed
  * perpendicular to the chord by an offset that scales with chord length, so
@@ -198,15 +202,20 @@ export default function GeoPulseMap() {
       zoom={3}
       minZoom={2}
       maxZoom={9}
-      worldCopyJump
+      worldCopyJump={false}
+      bounds={GLOBAL_BOUNDS}
+      maxBounds={GLOBAL_BOUNDS}
+      maxBoundsViscosity={1.0}
+      bounceAtZoomLimits={true}
       zoomControl
       className="h-full w-full"
       preferCanvas={false}
     >
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         attribution='&copy; OpenStreetMap &copy; CARTO'
         subdomains="abcd"
+        noWrap={true}
         maxZoom={20}
       />
       <FlyController events={activeEvents} selectedEventId={selectedEventId} />

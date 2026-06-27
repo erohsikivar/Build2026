@@ -6,7 +6,6 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -22,7 +21,8 @@ interface CrisisContextValue {
   activeEvents: CrisisEvent[];
   selectedEventId: string | null;
   selectedCategoryFilter: CategoryFilter;
-  /** Simulated operational clock anchored at June 27, 2026, ticking in real time. */
+  /** Live operational clock — real wall-clock time, ticking every second.
+   *  Decay staging is computed against this so fresh backend events read as fresh. */
   nowMs: number;
   hydrated: boolean;
   /** True while a backend fetch/refresh is in flight. */
@@ -31,8 +31,10 @@ interface CrisisContextValue {
   error: string | null;
   setSelectedEventId: (id: string | null) => void;
   setSelectedCategoryFilter: (filter: CategoryFilter) => void;
-  /** Triggers GET /api/crises?refresh=true and replaces the live feed. */
+  /** Triggers GET /api/crises?refresh=true — forces new Exa+OpenAI pipeline run. */
   simulateIngestion: () => void;
+  /** Retry a standard (cached) load after a connection failure. */
+  retryLoad: () => void;
 }
 
 const CrisisContext = createContext<CrisisContextValue | null>(null);
@@ -49,16 +51,11 @@ export function CrisisProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const mountWallClock = useRef<number>(0);
-
-  // Operational clock: anchored at the simulated "now", ticking in real time.
+  // Operational clock: real wall-clock time, ticking every second. The constant
+  // initial value keeps SSR deterministic; the real time is set on mount.
   useEffect(() => {
-    mountWallClock.current = Date.now();
     setHydrated(true);
-    const tick = () => {
-      const elapsed = Date.now() - mountWallClock.current;
-      setNowMs(ANCHOR_MS + elapsed);
-    };
+    const tick = () => setNowMs(Date.now());
     tick();
     const interval = window.setInterval(tick, 1000);
     return () => window.clearInterval(interval);
@@ -101,6 +98,11 @@ export function CrisisProvider({ children }: { children: ReactNode }) {
     void loadCrises(true);
   }, [loadCrises]);
 
+  // Retry button after a connection failure — uses cached endpoint (no Exa/OpenAI cost).
+  const retryLoad = useCallback(() => {
+    void loadCrises(false);
+  }, [loadCrises]);
+
   const value = useMemo<CrisisContextValue>(
     () => ({
       activeEvents,
@@ -113,6 +115,7 @@ export function CrisisProvider({ children }: { children: ReactNode }) {
       setSelectedEventId,
       setSelectedCategoryFilter,
       simulateIngestion,
+      retryLoad,
     }),
     [
       activeEvents,
@@ -123,6 +126,7 @@ export function CrisisProvider({ children }: { children: ReactNode }) {
       loading,
       error,
       simulateIngestion,
+      retryLoad,
     ],
   );
 

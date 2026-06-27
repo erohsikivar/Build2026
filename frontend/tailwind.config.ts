@@ -5,24 +5,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Light tactical surface ramp (lightest -> deepest neutral).
         base: {
-          900: "#050B14",
-          800: "#0A1120",
-          700: "#101A30",
-          600: "#16223D",
+          900: "#F8FAFC",
+          800: "#F1F5F9",
+          700: "#E2E8F0",
+          600: "#CBD5E1",
         },
         neon: {
           conflict: "#FF3333",
-          unrest: "#FF8C00",
-          biosecurity: "#33FF33",
-          humanitarian: "#00D7FF",
+          unrest: "#E67E22",
+          biosecurity: "#2ECC71",
+          humanitarian: "#0097A7",
         },
       },
       fontFamily: {
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       boxShadow: {
-        glass: "inset 0 1px 0 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.45)",
+        glass: "0 1px 2px 0 rgba(15,23,42,0.04), 0 8px 28px rgba(15,23,42,0.10)",
       },
     },
   },
